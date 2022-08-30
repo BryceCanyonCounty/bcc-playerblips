@@ -1,11 +1,41 @@
 Blips = {}
 CurrentPlayers = {}
+appready = false
+
+function clear_blips()
+    for k, _ in pairs(Blips) do -- Loop through current map blips
+        if CurrentPlayers[tostring(k)] == nil then -- Check if the key still exists in current users
+            RemoveBlip(Blips[tostring(k)]) -- Clear Map Blip
+            Blips[tostring(k)] = nil -- Set Value to Nil
+        end
+    end
+end
+
+function GetPlayers()
+    TriggerServerEvent("mwg_playerblips:GetPlayers")
+    while next(CurrentPlayers) == nil do
+        Wait(10)
+    end
+end
+
+RegisterNetEvent("mwg_playerblips:SendPlayers", function(result)
+    CurrentPlayers = result
+end)
 
 Citizen.CreateThread(function()
     while true do
         if Config.Enable then
+            GetPlayers()
+            appready = true
+        end
+        Citizen.Wait(5000)
+    end
+end)
+
+Citizen.CreateThread(function()
+    while true do
+        if Config.Enable and appready then
             -- Get all players
-            CurrentPlayers = GetPlayers()
             local id = GetPlayerServerId(PlayerId()) -- Get Server ID of Client
             for _, player in pairs(CurrentPlayers) do
                 if tostring(id) ~= player.serverId then -- Don't create Blips for the current user
@@ -32,25 +62,3 @@ Citizen.CreateThread(function()
         Citizen.Wait(Config.WaitTime)
     end
 end)
-
-function clear_blips()
-    for k, _ in pairs(Blips) do -- Loop through current map blips
-        if CurrentPlayers[tostring(k)] == nil then -- Check if the key still exists in current users
-            RemoveBlip(Blips[tostring(k)]) -- Clear Map Blip
-            Blips[tostring(k)] = nil -- Set Value to Nil
-        end
-    end
-end
-
--- Stolen from vorp_admin
-function GetPlayers()
-    TriggerServerEvent("mwg_playerblips:GetPlayers")
-    local playersData = {}
-    RegisterNetEvent("mwg_playerblips:SendPlayers", function(result)
-        playersData = result
-    end)
-    while next(playersData) == nil do
-        Wait(10)
-    end
-    return playersData
-end
