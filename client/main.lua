@@ -1,6 +1,7 @@
-Blips = {}
-CurrentPlayers = {}
-appready = false
+local Blips = {}
+local CurrentPlayers = {}
+local appready = false
+local received = false
 
 function clear_blips()
     for k, _ in pairs(Blips) do -- Loop through current map blips
@@ -11,27 +12,38 @@ function clear_blips()
     end
 end
 
-function GetPlayers()
-    TriggerServerEvent("mwg_playerblips:GetPlayers")
-    while next(CurrentPlayers) == nil do
-        Wait(10)
+function GetPlayers() 
+    received = false -- reset to ensure the check is done each time getplayers is called
+    TriggerServerEvent("mwg_playerblips:GetPlayers") -- Ask the server for the players list
+    
+
+    while received == false do -- Ensure that the server has responded
+        Citizen.Wait(5)
     end
 end
 
+
 RegisterNetEvent("mwg_playerblips:SendPlayers", function(result)
     CurrentPlayers = result
+    received = true
 end)
 
+-- User Fetch Thread
 Citizen.CreateThread(function()
     while true do
         if Config.Enable then
-            GetPlayers()
-            appready = true
+            GetPlayers() -- Get list of players
+
+            if CurrentPlayers["1"] and appready == false then --Check to make sure at least one player is in the list before starting the blip thread
+                appready = true --Let the blip thread know it can now start
+            end
         end
-        Citizen.Wait(5000)
+
+        Citizen.Wait(Config.PlayersRefreshTime)
     end
 end)
 
+-- Blip Thread
 Citizen.CreateThread(function()
     while true do
         if Config.Enable and appready then
