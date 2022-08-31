@@ -13,3 +13,7 @@ client_scripts {
     'Config.lua',
     'client/main.lua'
 }
+
+dependencies {
+    'vorp_core'
+}
