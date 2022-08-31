@@ -14,9 +14,19 @@
         "author",
         "description",
         "server_scripts",
-        "client_scripts"
-    ],
-    "Lua.diagnostics.disable": [
-        "undefined-global"
+        "client_scripts",
+        "clear_blips",
+        "TriggerServerEvent",
+        "RegisterNetEvent",
+        "GetPlayerServerId",
+        "PlayerId",
+        "SetBlipCoords",
+        "TriggerEvent",
+        "RegisterServerEvent",
+        "AddEventHandler",
+        "source",
+        "DoesEntityExist",
+        "GetPlayerName",
+        "TriggerClientEvent"
     ]
 }
