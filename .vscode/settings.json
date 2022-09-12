@@ -27,6 +27,7 @@
         "source",
         "DoesEntityExist",
         "GetPlayerName",
-        "TriggerClientEvent"
+        "TriggerClientEvent",
+        "GetHashKey"
     ]
 }

@@ -52,11 +52,16 @@ Citizen.CreateThread(function()
                     if blips[player.serverId] then -- Check if blip already exists
                         SetBlipCoords(blips[player.serverId], player.x, player.y, player.z) -- Move it to new coords
                     else --Create Blip if one doesn't
-                        local blip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, player.x, player.y, player.z)
+                        -- Get Style Hash
+                        local blip_style = GetHashKey("BLIP_STYLE_TEAM_WAYPOINT")
+
+                        -- BLIP_ADD_FOR_COORDS
+                        local blip = Citizen.InvokeNative(0x554D9D53F696D002, blip_style, player.x, player.y, player.z)
                         -- Set Sprite
-                        Setblipsprite(blip, -1025216818, true)
+                        Citizen.InvokeNative(0x74F74D3207ED525C, blip, -1025216818, true)
                         -- Set Scale (Not working)
-                        Setblipscale(blip, 0.01)
+                        Citizen.InvokeNative(0xD38744167B2FA257, blip, 0.01)
+                        -- Set Blip Name from Player String
                         Citizen.InvokeNative(0x9CB1A1623062F402, blip, player.PlayerName)
                         -- Store a table of blips to delete on next update
                         blips[player.serverId] = blip
