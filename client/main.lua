@@ -4,24 +4,24 @@ local appready = false
 local received = false
 
 function clear_blips()
-    for k, _ in pairs(blips) do -- Loop through current map blips
+    for k, _ in pairs(blips) do                    -- Loop through current map blips
         if currentPlayers[tostring(k)] == nil then -- Check if the key still exists in current users
-            RemoveBlip(blips[tostring(k)]) -- Clear Map Blip
-            blips[tostring(k)] = nil -- Set Value to Nil
+            RemoveBlip(blips[tostring(k)])         -- Clear Map Blip
+            blips[tostring(k)] = nil               -- Set Value to Nil
         end
     end
 end
 
 function GetPlayers()
-    received = false -- reset to ensure the check is done each time getplayers is called
-    TriggerServerEvent("mwg_playerblips:GetPlayers") -- Ask the server for the players list
+    received = false                                 -- reset to ensure the check is done each time getplayers is called
+    TriggerServerEvent("bcc-playerblips:GetPlayers") -- Ask the server for the players list
 
-    while received == false do -- Ensure that the server has responded
+    while received == false do                       -- Ensure that the server has responded
         Citizen.Wait(5)
     end
 end
 
-RegisterNetEvent("mwg_playerblips:SendPlayers", function(result)
+RegisterNetEvent("bcc-playerblips:SendPlayers", function(result)
     currentPlayers = result
     received = true
 end)
@@ -30,10 +30,10 @@ end)
 Citizen.CreateThread(function()
     while true do
         if Config.Enable then
-            GetPlayers() -- Get list of players
+            GetPlayers()                                      -- Get list of players
 
             if currentPlayers["1"] and appready == false then --Check to make sure at least one player is in the list before starting the blip thread
-                appready = true --Let the blip thread know it can now start
+                appready = true                               --Let the blip thread know it can now start
             end
         end
 
@@ -46,12 +46,12 @@ Citizen.CreateThread(function()
     while true do
         if Config.Enable and appready then
             -- Get all players
-            local id = GetPlayerServerId(PlayerId()) -- Get Server ID of Client
+            local id = GetPlayerServerId(PlayerId())                                        -- Get Server ID of Client
             for _, player in pairs(currentPlayers) do
-                if tostring(id) ~= player.serverId then -- Don't create blips for the current user
-                    if blips[player.serverId] then -- Check if blip already exists
+                if tostring(id) ~= player.serverId then                                     -- Don't create blips for the current user
+                    if blips[player.serverId] then                                          -- Check if blip already exists
                         SetBlipCoords(blips[player.serverId], player.x, player.y, player.z) -- Move it to new coords
-                    else --Create Blip if one doesn't
+                    else                                                                    --Create Blip if one doesn't
                         -- Get Style Hash
                         local blip_style = GetHashKey("BLIP_STYLE_TEAM_WAYPOINT")
 

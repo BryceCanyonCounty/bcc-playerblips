@@ -1,11 +1,10 @@
--- Stolen from vorp_admin slimmed down to what I'm using
 local VorpCore = {}
 TriggerEvent("getCore", function(core)
     VorpCore = core
 end)
 
-RegisterServerEvent('mwg_playerblips:GetPlayers')
-AddEventHandler('mwg_playerblips:GetPlayers', function()
+RegisterServerEvent('bcc-playerblips:GetPlayers')
+AddEventHandler('bcc-playerblips:GetPlayers', function()
     local _source = source
     local players = GetPlayers()
     local data = {}
@@ -16,7 +15,7 @@ AddEventHandler('mwg_playerblips:GetPlayers', function()
         if DoesEntityExist(playerPed) then
             local coords = GetEntityCoords(playerPed)
             local User = VorpCore.getUser(player)
-            local Character = User.getUsedCharacter --get player info
+            local Character = User.getUsedCharacter                                 --get player info
             if Character.firstname then
                 local playername = Character.firstname .. ' ' .. Character.lastname --player char name
 
@@ -31,5 +30,5 @@ AddEventHandler('mwg_playerblips:GetPlayers', function()
             end
         end
     end
-    TriggerClientEvent("mwg_playerblips:SendPlayers", _source, data)
+    TriggerClientEvent("bcc-playerblips:SendPlayers", _source, data)
 end)
